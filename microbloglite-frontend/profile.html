@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+      property="viewport"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="profile.css" />
+
+    <title>MicroBlog - Profile</title>
+
+    <script src="auth.js"></script>
+    <script>
+      requireLogin();
+    </script>
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="#">MicroBlog</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="posts.html">Posts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="profile.html">Profile</a>
+            </li>
+          </ul>
+          <button class="btn btn-outline-light" id="logoutButton">
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h2 class="card-title">Profile Information</h2>
+              <form id="profileForm">
+                <div class="mb-3">
+                  <label for="username" class="form-label">Username</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    readonly
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="fullName" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="fullName"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="bio" class="form-label">Bio</label>
+                  <textarea class="form-control" id="bio" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Update Profile
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Profile Stats</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  Posts: <span id="postCount">0</span>
+                </li>
+                <li class="list-group-item">
+                  Followers: <span id="followerCount">0</span>
+                </li>
+                <li class="list-group-item">
+                  Following: <span id="followingCount">0</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="profile.js"></script>
+  </body>
+</html>
