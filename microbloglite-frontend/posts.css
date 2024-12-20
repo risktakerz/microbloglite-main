@@ -49,3 +49,68 @@
     transform: translateX(5px);
   }
 }
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+  backdrop-filter: blur(10px);
+  background-color: rgba(13, 110, 253, 0.9) !important;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn {
+  border-radius: 25px;
+  padding: 0.5rem 1.5rem;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-outline-primary {
+  color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+#createPostForm textarea {
+  border-radius: 15px;
+  resize: none;
+}
+
+#postsContainer .card {
+  margin-bottom: 1rem;
+}
+
+#loadMoreButton {
+  width: 100%;
+  max-width: 200px;
+}
+
+@media (max-width: 991.98px) {
+  .sticky-top {
+    position: static;
+    top: 0;
+  }
+}

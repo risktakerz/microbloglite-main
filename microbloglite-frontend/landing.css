@@ -1,19 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
 body {
-  padding-top: 20px;
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background-image: url("https://source.unsplash.com/random/1920x1080?blog");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.login-container {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
 }
 
 .card {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
-  background-color: #3498db;
-  border-color: #3498db;
+  background-color: #4e54c8;
+  border-color: #4e54c8;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
-  border-color: #2980b9;
+  background-color: #3f45b6;
+  border-color: #3f45b6;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(78, 84, 200, 0.4);
 }
 
+.form-control {
+  border-radius: 0 25px 25px 0;
+  padding: 12px 20px;
+}
 
+.input-group-text {
+  border-radius: 25px 0 0 25px;
+  background-color: #f8f9fa;
+  border-right: none;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #4e54c8;
+}
+
+.text-primary {
+  color: #4e54c8 !important;
+}
+
+a {
+  color: #4e54c8;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: #3f45b6;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card,
+.display-4,
+.lead {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.display-4 {
+  animation-delay: 0.2s;
+}
+
+.lead {
+  animation-delay: 0.4s;
+}
+
+.card {
+  animation-delay: 0.6s;
+}
+
+@media (max-width: 767.98px) {
+  body {
+    background-image: url("https://source.unsplash.com/random/800x1200?blog");
+  }
+
+  .login-container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+}

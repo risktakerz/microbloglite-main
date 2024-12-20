@@ -1,0 +1,74 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+  backdrop-filter: blur(10px);
+  background-color: rgba(13, 110, 253, 0.9) !important;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn {
+  border-radius: 25px;
+  padding: 0.5rem 1.5rem;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.form-control,
+.input-group-text {
+  border-radius: 10px;
+}
+
+.input-group .form-control {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  border-color: #86b7fe;
+}
+
+.list-group-item {
+  border: none;
+  padding: 1rem 1.25rem;
+}
+
+.badge {
+  font-size: 0.9em;
+}
+
+@media (max-width: 991.98px) {
+  .sticky-top {
+    position: static;
+    top: 0;
+  }
+}

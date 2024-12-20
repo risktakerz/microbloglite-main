@@ -6,6 +6,8 @@
 let currentPage = 1;
 const postsPerPage = 10;
 let isLoading = false;
+const loginData = JSON.parse(localStorage.getItem("login-data")) || {};
+const TOKEN = loginData.token;
 
 // DOM Elements
 const postsContainer = document.getElementById("postsContainer");
@@ -31,7 +33,7 @@ async function loadPosts() {
       `${API_URL}/api/posts?limit=${postsPerPage}&page=${currentPage}`,
       {
         headers: {
-          Authorization: `Bearer ${loginData.token}`,
+          Authorization: `Bearer ${TOKEN}`,
         },
       }
     );
@@ -89,9 +91,11 @@ function createPostElement(post) {
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start">
                 <div class="d-flex flex-column align-items-center me-3">
-                    <button class="btn btn-link like-btn" data-post-id="${
-                      post._id
-                    }">
+                    <button class="btn btn-link like-btn ${
+                      post.likes && post.likes.includes(loginData.username)
+                        ? "active"
+                        : ""
+                    }" data-post-id="${post._id}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                             <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
                         </svg>
@@ -122,11 +126,6 @@ function createPostElement(post) {
   const likeBtn = postDiv.querySelector(".like-btn");
   likeBtn.addEventListener("click", () => handleLike(post._id, likeBtn));
 
-  // Check if user has already liked the post
-  if (post.likes && post.likes.includes(loginData.username)) {
-    likeBtn.classList.add("active");
-  }
-
   return postDiv;
 }
 
@@ -136,11 +135,10 @@ async function deletePost(postId, postElement) {
   }
 
   try {
-    const loginData = getLoginData();
     const response = await fetch(`${API_URL}/api/posts/${postId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${loginData.token}`,
+        Authorization: `Bearer ${TOKEN}`,
       },
     });
 
@@ -160,7 +158,7 @@ async function loadUserProfile() {
     const loginData = getLoginData();
     const response = await fetch(`${API_URL}/api/users/${loginData.username}`, {
       headers: {
-        Authorization: `Bearer ${loginData.token}`,
+        Authorization: `Bearer ${TOKEN}`,
       },
     });
 
@@ -188,7 +186,7 @@ function setupEventListeners() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${loginData.token}`,
+          Authorization: `Bearer ${TOKEN}`,
         },
         body: JSON.stringify({ text: postText }),
       });
@@ -213,6 +211,115 @@ function setupEventListeners() {
   });
 }
 
+// Handle like functionality
+async function handleLike(postId, button) {
+  try {
+    const isLiked = button.classList.contains("active");
+    const likesCount = button.querySelector(".likes-count");
+    const currentLikes = parseInt(likesCount.textContent);
+
+    if (isLiked) {
+      // Get the like ID first
+      const response = await fetch(`${API_URL}/api/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get post details");
+      }
+
+      const post = await response.json();
+      const loginData = getLoginData();
+      const like = post.likes.find(
+        (like) => like.username === loginData.username
+      );
+
+      if (!like) {
+        throw new Error("Like not found");
+      }
+
+      // Unlike using the like ID
+      const unlikeResponse = await fetch(`${API_URL}/api/likes/${like._id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+
+      if (unlikeResponse.status === 204) {
+        likesCount.textContent = currentLikes - 1;
+        button.classList.remove("active");
+      } else {
+        throw new Error("Failed to unlike post");
+      }
+    } else {
+      // Like
+      const response = await fetch(`${API_URL}/api/likes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${TOKEN}`,
+        },
+        body: JSON.stringify({ postId }),
+      });
+
+      if (response.status === 201) {
+        likesCount.textContent = currentLikes + 1;
+        button.classList.add("active");
+      } else if (response.status === 400) {
+        // Check if it's a duplicate key error
+        const errorData = await response.json();
+        if (errorData.message.includes("duplicate key error")) {
+          // If already liked, try to unlike
+          const getPostResponse = await fetch(
+            `${API_URL}/api/posts/${postId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${TOKEN}`,
+              },
+            }
+          );
+
+          if (!getPostResponse.ok) {
+            throw new Error("Failed to get post details");
+          }
+
+          const post = await getPostResponse.json();
+          const like = post.likes.find(
+            (like) => like.username === loginData.username
+          );
+
+          if (like) {
+            const unlikeResponse = await fetch(
+              `${API_URL}/api/likes/${like._id}`,
+              {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${TOKEN}`,
+                },
+              }
+            );
+
+            if (unlikeResponse.status === 204) {
+              likesCount.textContent = currentLikes - 1;
+              button.classList.remove("active");
+            }
+          }
+        } else {
+          throw new Error("Failed to like post");
+        }
+      } else {
+        throw new Error("Failed to like post");
+      }
+    }
+  } catch (error) {
+    console.error("Error updating like:", error);
+    alert("Failed to update like. Please try again.");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   if (!isLoggedIn()) {
     alert("You must be logged in to view this page.");
@@ -222,61 +329,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadPosts();
   await loadUserProfile();
 });
-
-// Handle like functionality
-async function handleLike(postId, button) {
-  try {
-    const loginData = getLoginData();
-    const isLiked = button.classList.contains("active");
-
-    if (isLiked) {
-      // Unlike: DELETE /api/likes/{postId}
-      const response = await fetch(`${API_URL}/api/likes/${postId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${loginData.token}`,
-        },
-        body: JSON.stringify({
-          username: loginData.username,
-        }),
-      });
-
-      if (response.status === 204) {
-        // API returns 204 for successful delete
-        const likesCount = button.querySelector(".likes-count");
-        const currentLikes = parseInt(likesCount.textContent);
-        likesCount.textContent = currentLikes - 1;
-        button.classList.remove("active");
-      } else {
-        throw new Error("Failed to unlike post");
-      }
-    } else {
-      // Like: POST /api/likes
-      const response = await fetch(`${API_URL}/api/likes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${loginData.token}`,
-        },
-        body: JSON.stringify({
-          postId: postId,
-        }),
-      });
-
-      if (response.status === 201) {
-        // API returns 201 for successful creation
-        const likesCount = button.querySelector(".likes-count");
-        const currentLikes = parseInt(likesCount.textContent);
-        likesCount.textContent = currentLikes + 1;
-        button.classList.add("active");
-      } else {
-        throw new Error("Failed to like post");
-      }
-    }
-  } catch (error) {
-    console.error("Error updating like:", error);
-    button.classList.add("error");
-    setTimeout(() => button.classList.remove("error"), 1000);
-  }
-}
