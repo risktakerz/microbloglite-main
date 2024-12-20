@@ -1,1 +1,51 @@
 /* Posts Page CSS */
+
+.like-btn {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #6c757d;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.like-btn:hover {
+  color: #dc3545;
+  transform: scale(1.1);
+}
+
+.like-btn.active {
+  color: #dc3545;
+}
+
+.like-btn.active svg {
+  fill: #dc3545;
+}
+
+.likes-count {
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.card-body {
+  position: relative;
+}
+
+.like-btn.error {
+  animation: shake 0.5s;
+  color: #dc3545;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
